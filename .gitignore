@@ -1,0 +1,12 @@
+*~
+\#*\#
+*.ihx
+*.hex
+*.lk
+*.lst
+*.map
+*.rst
+*.mem
+*.sym
+*.rel
+LedTimer/LedTimer.asm
