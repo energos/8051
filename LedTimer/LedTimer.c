@@ -1,3 +1,18 @@
+/*
+   Investigar o "escorregamento" do tempo de interrupção causado pelo atraso
+   na recarga do timer.
+
+   O timer0 é recarregado pela própria rotina de atendimento da interrupção.
+   Há um atraso entre o momento da interrupção e o momento da recarga, com o
+   consequente desvio do período de interrupção.
+
+   O timer1 é programado em modo de recarga automática, evitando o problema.
+
+   Os bits pares da porta P1 "acompanham" o timer1.
+   Os bits impares de P1 "acompanham" o timer0.
+   Assim o "escorregamento" fica evidente.
+ */
+
 #include <stdbool.h>
 #include <8051.h>
 
