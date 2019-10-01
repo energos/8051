@@ -28,6 +28,11 @@ volatile _Bool clockupdate1;
 #define TH0RLD   (65536 - T0RELOAD) / 256
 #define TL0RLD   (65536 - T0RELOAD) % 256
 
+/* ciclos de máquina com o timer0 parado na isr do timer0
+   verificar o assembler gerado pelo compilador e contar os ciclos
+ */
+#define T0SLIP   19
+
 /* reload = clock_f(MHz)*1000/12*period(ms)
           = 12MHz*1000/12*0.25ms
           = 250 */
@@ -36,8 +41,35 @@ volatile _Bool clockupdate1;
 
 void clockinc0(void) __interrupt(1)
 {
+
+#if 1
+  union
+  {
+    struct
+    {
+      unsigned char bytelow;
+      unsigned char bytehigh;
+    } bytes;
+    unsigned int word;
+  } now;
+
+  /* Correção do "escorregamento"
+     Parar timer0, ler valor, calcular novo valor, recarregar e partir
+     CUIDADO!
+     Se entrar uma interrupção durante esse trecho o cálculo pode ficar errado
+   */
+  TR0 = 0;
+  now.bytes.bytelow = TL0;
+  now.bytes.bytehigh = TH0;
+  now.word += 65536 - T0RELOAD + T0SLIP;
+  TL0 = now.bytes.bytelow;
+  TH0 = now.bytes.bytehigh;
+  TR0 = 1;
+#else
   TH0 = TH0RLD;
   TL0 = TL0RLD;
+#endif
+
   clocktime0++;
   clockupdate0 = true;
 }
@@ -103,6 +135,7 @@ void main(void)
 
   for(;;)
     {
+      // CUIDADO! overflow dos contadores pode trazer surpresas...
       a.byte = ~(clock0() / 1000);
       b.byte = ~(clock1() / 1000);
 
