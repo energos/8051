@@ -31,7 +31,13 @@ volatile _Bool clockupdate1;
 /* ciclos de máquina com o timer0 parado na isr do timer0
    verificar o assembler gerado pelo compilador e contar os ciclos
  */
+#if 0
+/* 12T CPUs */
 #define T0SLIP   19
+#else
+/* 1T CPUs */
+#define T0SLIP   1
+#endif
 
 /* reload = clock_f(MHz)*1000/12*period(ms)
           = 12MHz*1000/12*0.25ms
@@ -140,14 +146,14 @@ void main(void)
       b.byte = ~(clock1() / 1000);
 
       // gera código pouco eficiente...
-      P1_0 = b.bits.bit0;
-      P1_1 = a.bits.bit0;
-      P1_2 = b.bits.bit1;
-      P1_3 = a.bits.bit1;
-      P1_4 = b.bits.bit2;
-      P1_5 = a.bits.bit2;
-      P1_6 = b.bits.bit3;
-      P1_7 = a.bits.bit3;
+      P0_0 = b.bits.bit0;
+      P0_1 = a.bits.bit0;
+      P0_2 = b.bits.bit1;
+      P0_3 = a.bits.bit1;
+      P0_4 = b.bits.bit2;
+      P0_5 = a.bits.bit2;
+      P0_6 = b.bits.bit3;
+      P0_7 = a.bits.bit3;
     }
 
 }
