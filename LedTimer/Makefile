@@ -10,10 +10,18 @@ clean:
 	rm -f LedTimer.asm
 
 flash: LedTimer.hex
-	stcgal -P stc8 $^
+#	stcgal -P stc8 $^
+#	minipro -p 87c51fa -w LedTimer.hex
+	stcgal -P stc89 $^
+
+verify: LedTimer.hex
+#	minipro -p 87c51fa -m LedTimer.hex
+	@echo "Not available for this device"
 
 reset:
-	stcgal -P stc8
+#	stcgal -P stc8
+#	@echo "Not available for this device"
+	stcgal -P stc89
 
 LedTimer.hex: LedTimer.c
 	sdcc $^

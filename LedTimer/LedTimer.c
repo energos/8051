@@ -31,7 +31,10 @@ volatile _Bool clockupdate1;
 /* ciclos de máquina com o timer0 parado na isr do timer0
    verificar o assembler gerado pelo compilador e contar os ciclos
  */
-#if 0
+
+#define OLD8051
+
+#ifdef OLD8051
 /* 12T CPUs */
 #define T0SLIP   19
 #else
@@ -146,6 +149,16 @@ void main(void)
       b.byte = ~(clock1() / 1000);
 
       // gera código pouco eficiente...
+#ifdef OLD8051
+      P1_0 = b.bits.bit0;
+      P1_1 = a.bits.bit0;
+      P1_2 = b.bits.bit1;
+      P1_3 = a.bits.bit1;
+      P1_4 = b.bits.bit2;
+      P1_5 = a.bits.bit2;
+      P1_6 = b.bits.bit3;
+      P1_7 = a.bits.bit3;
+#else
       P0_0 = b.bits.bit0;
       P0_1 = a.bits.bit0;
       P0_2 = b.bits.bit1;
@@ -154,6 +167,7 @@ void main(void)
       P0_5 = a.bits.bit2;
       P0_6 = b.bits.bit3;
       P0_7 = a.bits.bit3;
+#endif
     }
 
 }
